@@ -18,6 +18,9 @@ env:
 
   APP_SERVICE_NAME: 'appservice-test-example'
   AZURE_WEBAPP_PACKAGE_PATH: '.'
+  PROJECT_TARGET_PATH: './AppService/AppService.csproj'
+  SOLUTION_PATH: 'AppService.sln'
+  BUILD_NAME: 'AppService'
 
 jobs:
 
@@ -45,42 +48,27 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout source code
+        uses: actions/checkout@v4
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v4
+      - uses: nhatthaiquang-agilityio/Terraform-CI-CD/.github/actions/build-package-dotnet@main
+        id: build-package
         with:
-          dotnet-version: '8.0.x'
-
-      - name: Build with dotnet
-        run: dotnet build ./AppService/AppService.csproj --configuration Release
-
-      - name: dotnet publish
-        run: dotnet publish ./AppService/AppService.csproj -c Release -o ./myapp
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
-          path: ./myapp
+          solution-path: ${{ env.SOLUTION_PATH }}
+          build-target-path: ${{ env.PROJECT_TARGET_PATH }}
+          build-name: ${{ env.BUILD_NAME }}
 
   deploy:
     needs: build
     runs-on: windows-latest
     environment: test
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v5
+      - name: 'Deploy Azure App Service'
+        uses: nhatthaiquang-agilityio/Terraform-CI-CD/.github/actions/deploy-app-service@main
+        id: azure-app-service
         with:
-          name: .net-app
-
-      - uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.APP_SERVICE_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          azure-app-service-name: ${{ env.APP_SERVICE_NAME }}
+          azure-app-service-package-path: ' ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+          arm-credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          azure-app-service-publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          artifact-name: 'app-service'
