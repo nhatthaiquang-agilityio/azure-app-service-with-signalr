@@ -22,13 +22,12 @@ resource "azurerm_app_service" "app_service" {
 		scm_type                 = "LocalGit"
 	}
 
-	connection_string {
-		name  = "AzureSignalRConnectionString"
-		type  = "SignalR"
-		value = azurerm_signalr_service.signalr_example.primary_connection_string
-	}
+	tags     			  			= merge(var.tags, {
+		environment = var.environment
+	})
 
 	app_settings = {
-		"WEBSITE_RUN_FROM_PACKAGE" = "1"
+		"WEBSITE_RUN_FROM_PACKAGE" = "1",
+		AzureSignalRConnectionString = azurerm_signalr_service.signalr_example.primary_connection_string
 	}
 }

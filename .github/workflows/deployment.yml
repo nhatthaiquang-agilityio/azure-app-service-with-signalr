@@ -52,10 +52,10 @@ jobs:
           dotnet-version: '8.0.x' # Adjust the version as needed
 
       - name: Build with dotnet
-        run: dotnet build ./AppService/SignalRAppService.csproj --configuration Release
+        run: dotnet build ./AppService/AppService.csproj --configuration Release
 
       - name: Publish with dotnet
-        run: dotnet publish ./AppService/SignalRAppService.csproj --configuration Release --output ./dist
+        run: dotnet publish ./AppService/AppService.csproj --configuration Release --output ./dist
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
