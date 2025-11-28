@@ -10,3 +10,5 @@ tags = {
   environment = "test"
   project     = "signalr-example"
 }
+
+app_service_name = "appservice-test-example"
