@@ -11,10 +11,4 @@
     <PackageReference Include="Microsoft.Azure.SignalR" Version="1.32.0" />
   </ItemGroup>
 
-   <ItemGroup>
-    <Content Update="web.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 </Project>
