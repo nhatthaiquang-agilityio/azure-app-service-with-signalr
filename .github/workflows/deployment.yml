@@ -21,26 +21,26 @@ env:
 
 jobs:
 
-  setup-infrastructure-on-test:
-    runs-on: windows-latest
-    environment: test
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
+  # setup-infrastructure-on-test:
+  #   runs-on: windows-latest
+  #   environment: test
+  #   steps:
+  #     - name: Checkout source code
+  #       uses: actions/checkout@v4
 
-      - uses: nhatthaiquang-agilityio/Terraform-CI-CD/.github/actions/terraform@main
-        id: run-terraform
-        with:
-          working-directory: ${{ env.TERRAFORM_WORKING_DIRECTORY }}
-          environment: 'test'
-          arm-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          arm-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          arm-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          arm-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          terraform-resource-group-name: ${{ env.TERRAFORM_RESOURCE_GROUP_NAME }}
-          terraform-storage-account: ${{ env.TERRAFORM_STORAGE_ACCOUNT }}
-          terraform-container-name: ${{ env.TERRAFORM_CONTAINER_NAME }}
-          terraform-filename: 'test.${{ env.TERRAFORM_FILENAME }}'
+  #     - uses: nhatthaiquang-agilityio/Terraform-CI-CD/.github/actions/terraform@main
+  #       id: run-terraform
+  #       with:
+  #         working-directory: ${{ env.TERRAFORM_WORKING_DIRECTORY }}
+  #         environment: 'test'
+  #         arm-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+  #         arm-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+  #         arm-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  #         arm-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+  #         terraform-resource-group-name: ${{ env.TERRAFORM_RESOURCE_GROUP_NAME }}
+  #         terraform-storage-account: ${{ env.TERRAFORM_STORAGE_ACCOUNT }}
+  #         terraform-container-name: ${{ env.TERRAFORM_CONTAINER_NAME }}
+  #         terraform-filename: 'test.${{ env.TERRAFORM_FILENAME }}'
 
   build:
     needs: setup-infrastructure-on-test
@@ -80,6 +80,7 @@ jobs:
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          allow-no-subscriptions: true
           enable-AzPSSession: true
 
       - name: Deploy to Azure Web App
