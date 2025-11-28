@@ -50,7 +50,7 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x' # Adjust the version as needed
+          dotnet-version: '8.0.x'
 
       - name: Build with dotnet
         run: dotnet build ./AppService/AppService.csproj --configuration Release
@@ -58,9 +58,16 @@ jobs:
       - name: Publish with dotnet
         run: dotnet publish ./AppService/AppService.csproj --configuration Release --output ./dist
 
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.APP_SERVICE_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} # Or use OpenID Connect
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: './dist' # Path to your built application package
