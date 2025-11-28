@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  TERRAFORM_FILENAME: 'infrastructure.tfstate'
+  TERRAFORM_FILENAME: 'infra-signalr.tfstate'
   TERRAFORM_WORKING_DIRECTORY: './DevOps/Terraform/Infrastructures'
   TERRAFORM_STORAGE_ACCOUNT: 'tfstateexampleazfunc'
   TERRAFORM_CONTAINER_NAME: 'tfstatecontainer'
