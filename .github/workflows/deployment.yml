@@ -17,6 +17,7 @@ env:
   TERRAFORM_RESOURCE_GROUP_NAME: 'rg-signal-example'
 
   APP_SERVICE_NAME: 'appservice-test-example'
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
 
 jobs:
 
@@ -41,7 +42,7 @@ jobs:
           terraform-container-name: ${{ env.TERRAFORM_CONTAINER_NAME }}
           terraform-filename: 'test.${{ env.TERRAFORM_FILENAME }}'
 
-  build-and-deploy:
+  build:
     needs: setup-infrastructure-on-test
     runs-on: windows-latest
     steps:
@@ -55,13 +56,30 @@ jobs:
       - name: Build with dotnet
         run: dotnet build ./AppService/AppService.csproj --configuration Release
 
-      - name: Publish with dotnet
-        run: dotnet publish ./AppService/AppService.csproj --configuration Release --output ./dist
+      - name: dotnet publish
+        run: dotnet publish ./AppService/AppService.csproj -c Release -o ./myapp
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ./myapp
+
+  deploy:
+    needs: build
+    runs-on: windows-latest
+    environment: test
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v5
+        with:
+          name: .net-app
 
       - name: Azure login
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           enable-AzPSSession: true
 
       - name: Deploy to Azure Web App
@@ -69,4 +87,4 @@ jobs:
         with:
           app-name: ${{ env.APP_SERVICE_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: './dist' # Path to your built application package
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
