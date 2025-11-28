@@ -43,7 +43,6 @@ jobs:
   #         terraform-filename: 'test.${{ env.TERRAFORM_FILENAME }}'
 
   build:
-    needs: setup-infrastructure-on-test
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
