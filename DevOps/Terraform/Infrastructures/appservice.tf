@@ -16,9 +16,11 @@ resource "azurerm_app_service" "app_service" {
 	resource_group_name = data.azurerm_resource_group.rg.name
 	app_service_plan_id = azurerm_app_service_plan.app_service_plan.id
 
+	client_affinity_enabled           = true
 	site_config {
-		dotnet_framework_version = "v4.0"
 		scm_type                 = "LocalGit"
+		always_on                            = true
+    dotnet_framework_version             = "v8.0"
 	}
 
 	tags     			  			= merge(var.tags, {

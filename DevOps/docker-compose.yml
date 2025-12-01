@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  chat-app:
+    image: chat-app:latest
+    build:
+      context: ../AppService
+      dockerfile: Dockerfile
+    ports:
+      - "7134:7134"
