@@ -48,4 +48,4 @@ docker run -d -p 7134:7134 chat-app
 ```
 
 ### References
-![SignalR Chat Sample](https://github.com/Azure/azure-signalr/tree/dev/samples/ChatSample/ChatSample)
++ [SignalR Chat Sample](https://github.com/Azure/azure-signalr/tree/dev/samples/ChatSample/ChatSample)
